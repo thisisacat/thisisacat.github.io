@@ -42,6 +42,6 @@ if (state != NEW ||
 
 
 
-转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](http://1024.notacat.cn/2019/08/%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96-JAVA%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c%e6%89%80%e9%9c%80%e6%97%b6%e9%97%b4%2f/)
+转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](http://1024.notacat.cn/2019/09/%e7%ba%bf%e7%a8%8b-FutureTask%e6%80%bb%e7%bb%93%2f/)
 
 
