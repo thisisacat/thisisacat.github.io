@@ -245,6 +245,6 @@ request_timeout_in_ms
 https://cassandra.apache.org/doc/3.11/operating/hardware.html  
 https://cassandra.apache.org/doc/latest/data_modeling/data_modeling_refining.html
   
-转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](http://1024.notacat.cn/2020/05/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-volatile%E4%BF%AE%E9%A5%B0%E6%95%B0%E7%BB%84%E5%92%8C%E5%AF%B9%E8%B1%A1/)
+转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](http://1024.notacat.cn/2021/03/cassandra%E7%AC%94%E8%AE%B0/)
 
 
