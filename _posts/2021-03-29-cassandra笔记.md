@@ -239,6 +239,9 @@ max_value_size_in_mb
 cross_node_timeout  
 range_request_timeout_in_ms  
 request_timeout_in_ms  
+buffer_pool_use_heap_if_exhausted  
+disk_failure_policy  
+commit_failure_policy  
 )  
 
 硬件规格和容量规划  
