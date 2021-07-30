@@ -184,6 +184,6 @@ CompletableFuture.allOf(...),CompletableFuture.anyOf(...),参数里面的cf管�
   
 
   
-转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](http://1024.notacat.cn/2021/03/cassandra%E8%BF%90%E7%BB%B4/)
+转载请注明：[这不是一只猫的博客](http://1024.notacat.cn) » [点击阅读原文](https://1024.notacat.cn/2021/07/CompletableFuture/)
 
 
