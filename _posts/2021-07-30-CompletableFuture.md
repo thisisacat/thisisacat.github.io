@@ -4,7 +4,7 @@ title: CompletableFuture
 date: 2021-07-30
 tags: CompletableFuture    
 ---
-*Doug Lea 果然是大神中的大神。*
+*Doug Lea 果然是大神中的大神。CompletableFuture强撸了一个又一个美丽的夜晚*
 ### **结论** 
 **CompletableFuture 更多的是体现一种依赖关系src,dep,snd**
 
