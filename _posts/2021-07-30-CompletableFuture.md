@@ -10,7 +10,7 @@ tags: CompletableFuture
 
 ### **源码分析**
 
-mode<br/>
+*mode<br/>*
 mode的不同,影响在d.uniRun(a = src, fn, mode > 0 ? null : this)),postFire()等<br/>
 
 ```
@@ -25,7 +25,7 @@ mode的不同,影响在d.uniRun(a = src, fn, mode > 0 ? null : this)),postFire()
     
 ```
 
-postFire<br/>
+*postFire<br/>*
 根据mode的不同，返回this还是null,从而影响postComplete方法里面f的返回值,f的不同影响h的取值，是src的CompletableFuture还是dep的CompletableFuture
 
 ```
@@ -46,7 +46,7 @@ postFire<br/>
      }
 ```
 
-push<br/>
+*push<br/>*
 注意这里 是采用头插法的形式
 
 ```
@@ -58,7 +58,7 @@ push<br/>
     }
 ```
 
-tryFire
+*tryFire*
 
 ```
  final CompletableFuture<Void> tryFire(int mode) {
@@ -72,7 +72,7 @@ tryFire
         }
 ```
 
-uniRun
+*uniRun*
 
 ```
  final boolean uniRun(CompletableFuture<?> a, Runnable f, UniRun<?> c) {
@@ -99,7 +99,7 @@ uniRun
     }
 ```
 
-claim
+*claim*
 
 ```
  final boolean claim() {
@@ -115,7 +115,7 @@ claim
         }
 ```
 
-postFire<br/>
+*postFire<br/>*
 tryFire 和 postFire里面的两个return 关系到postComplete<br/>
 根据mode的不同，返回this还是null,从而影响postComplete方法里面f的返回值,f的不同影响h的取值，是src的CompletableFuture还是dep的CompletableFuture<br/>
 
@@ -137,7 +137,7 @@ tryFire 和 postFire里面的两个return 关系到postComplete<br/>
     }
 ```
 
-postComplete<br/>
+*postComplete<br/>*
 
 ```
  final void postComplete() {
@@ -171,6 +171,907 @@ postComplete<br/>
 
 大致的执行逻辑是 stack(dep) 为一个单元执行完，然后转下一个stack(dep)<br/>
 ![](/images/posts/CompletableFuture/process.png)<br/>
+
+*r1->r4->r5->r6->r8->r7->r3->r2<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+//                int a =1;
+//                int b =0;
+//                int c = a/b;
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r6 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r6 begin r6 begin r6 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r6 finish r6 finish r6 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r7 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r7 begin r7 begin r7 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r7 finish r7 finish r7 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r8 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r8 begin r8 begin r8 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r8 finish r8 finish r8 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+        CompletableFuture cf4 = cf1.thenRun(r4);
+
+
+        CompletableFuture cf5 = cf4.thenRun(r5);
+        CompletableFuture cf6 = cf4.thenRun(r6);
+        CompletableFuture cf7 = cf4.thenRun(r7);
+
+        CompletableFuture cf8 = cf6.thenRun(r8);
+
+
+//     r1->r4->r5->r6->r8->r7->r3->r2
+```
+*r1->r4->r7->r10->r3->r6->r9->r2->r5->r8<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+//                int a =1;
+//                int b =0;
+//                int c = a/b;
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r6 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r6 begin r6 begin r6 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r6 finish r6 finish r6 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r7 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r7 begin r7 begin r7 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r7 finish r7 finish r7 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r8 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r8 begin r8 begin r8 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r8 finish r8 finish r8 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r9 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r9 begin r9 begin r9 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r9 finish r9 finish r9 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r10 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r10 begin r10 begin r10 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r10 finish r10 finish r10 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+        CompletableFuture cf4 = cf1.thenRun(r4);
+
+
+        CompletableFuture cf5 = cf2.thenRun(r5);
+        CompletableFuture cf6 = cf3.thenRun(r6);
+        CompletableFuture cf7 = cf4.thenRun(r7);
+
+        CompletableFuture cf8 = cf5.thenRun(r8);
+        CompletableFuture cf9 = cf6.thenRun(r9);
+        CompletableFuture cf10 = cf7.thenRun(r10);
+
+//        r1->r4->r7->r10->r3->r6->r9->r2->r5->r8
+```
+*r1->r4->(r5异步,r6异步,r7同步)  r6结束->r8,r7结束->r3->r2<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        ThreadPoolExecutor executorService2 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r6 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r6 begin r6 begin r6 " + System.currentTimeMillis());
+                    Thread.sleep(3000);
+                    System.out.println("finish r6 finish r6 finish r6 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r7 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r7 begin r7 begin r7 " + System.currentTimeMillis());
+                    Thread.sleep(10000);
+                    System.out.println("finish r7 finish r7 finish r7 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("r7 cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r8 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r8 begin r8 begin r8 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r8 finish r8 finish r8 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+        CompletableFuture cf4 = cf1.thenRun(r4);
+
+        CompletableFuture cf5 = cf4.thenRunAsync(r5);
+        CompletableFuture cf6 = cf4.thenRunAsync(r6);
+
+        CompletableFuture cf7 = cf4.thenRun(r7);
+
+        CompletableFuture cf8 = cf6.thenRun(r8);
+
+
+        System.out.println(cf2);
+
+        // r1->r4->(r5异步,r6异步,r7同步)  r6结束->r8,r7结束->r3->r2
+```
+*此方法可以调用到CompletableFuture<T> postFire{a.postComplete()};<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        ThreadPoolExecutor executorService2 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(5000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(10000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+        CompletableFuture cf4 = cf1.thenRunAsync(r4);
+        CompletableFuture cf5 = cf1.thenRunAsync(r5);
+
+
+        System.out.println(cf2);
+
+//        此方法可以调用到CompletableFuture<T> postFire{a.postComplete()};
+```
+*此方法可以调用到CompletableFuture<T> postFire{postComplete()};<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        ThreadPoolExecutor executorService2 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(5000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(10000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r6 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r6 begin r6 begin r6 " + System.currentTimeMillis());
+                    Thread.sleep(3000);
+                    System.out.println("finish r6 finish r6 finish r6 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r7 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r7 begin r7 begin r7 " + System.currentTimeMillis());
+                    Thread.sleep(5000);
+                    System.out.println("finish r7 finish r7 finish r7 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r8 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r8 begin r8 begin r8 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r8 finish r8 finish r8 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+        CompletableFuture cf4 = cf1.thenRun(r4);
+
+
+        CompletableFuture cf5 = cf4.thenRunAsync(r5);
+        CompletableFuture cf6 = cf4.thenRunAsync(r6);
+        CompletableFuture cf7 = cf4.thenRunAsync(r7);
+
+        CompletableFuture cf8 = cf6.thenRunAsync(r8);
+
+
+        System.out.println(cf2);
+
+//        此方法可以调用到CompletableFuture<T> postFire{postComplete()};
+
+```
+*r1->r3->r4->r5->r6->r7->r8->r9->r2<br/>*
+
+```
+ThreadPoolExecutor executorService1 = new ThreadPoolExecutor(10, 10,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(100));
+
+        Runnable r1 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r1 begin r1 begin r1 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r1 finish r1 finish r1 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r2 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r2 begin r2 begin r2 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r2 finish r2 finish r2 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r3 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r3 begin r3 begin r3 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r3 finish r3 finish r3 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+
+        Runnable r4 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r4 begin r4 begin r4 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r4 finish r4 finish r4 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r5 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r5 begin r5 begin r5 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r5 finish r5 finish r5 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r6 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r6 begin r6 begin r6 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r6 finish r6 finish r6 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r7 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r7 begin r7 begin r7 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r7 finish r7 finish r7 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r8 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r8 begin r8 begin r8 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r8 finish r8 finish r8 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+
+        Runnable r9 = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                try {
+                    System.out.println("begin r9 begin r9 begin r9 " + System.currentTimeMillis());
+                    Thread.sleep(1000);
+                    System.out.println("finish r9 finish r9 finish r9 " + System.currentTimeMillis());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("cost:" + (System.currentTimeMillis() -start));
+            }
+        };
+        
+        CompletableFuture cf1 = CompletableFuture.runAsync(r1,executorService1);
+
+        CompletableFuture cf2 = cf1.thenRun(r2);
+        CompletableFuture cf3 = cf1.thenRun(r3);
+
+
+        CompletableFuture cf4 = cf3.thenRun(r4);
+        CompletableFuture cf5 = cf3.thenRun(r5);
+
+
+        CompletableFuture cf6 = cf5.thenRun(r6);
+        CompletableFuture cf7 = cf5.thenRun(r7);
+
+        CompletableFuture cf8 = cf7.thenRun(r8);
+        CompletableFuture cf9 = cf7.thenRun(r9);
+
+
+        System.out.println(cf2);
+
+        // r1->r3->r4->r5->r6->r7->r8->r9->r2
+        
+```
 
 
 ### **其他**
