@@ -10,7 +10,8 @@ tags: CompletableFuture
 
 ### **源码分析**
 
-mode
+mode<br/>
+mode的不同,影响在d.uniRun(a = src, fn, mode > 0 ? null : this)),postFire()等<br/>
 
 ```
  static final int SYNC   =  0; //当前线程触发
@@ -21,7 +22,7 @@ mode
     }
     static final int NESTED = -1;//postComplete触发
    
-    mode的不同,影响在d.uniRun(a = src, fn, mode > 0 ? null : this)),postFire()等
+    
 ```
 
 postFire<br/>
@@ -173,7 +174,10 @@ postComplete<br/>
 
 
 ### **其他**
-CompletableFuture.allOf(...),CompletableFuture.anyOf(...),参数里面的cf管自己的顺序执行,没有先后顺序,allof、anyof只是做结果判断，如果所有cf都有result了(allOf),只要有一个cf有result(anyOf）,这里重要的是一个协调判断最后都调用到BiCompletion进行判断(allOf(BiRelay),anyOf(OrRelay))
+CompletableFuture.allOf(...),CompletableFuture.anyOf(...),参数里面的cf管自己的顺序执行,没有先后顺序.<br/>
+allof、anyof只是做结果判断,如果所有cf都有result了(allOf),或只要有一个cf有result(anyOf).
+这里重要的是一个协调判断,最后都调用到BiCompletion进行判断(allOf(BiRelay),anyOf(OrRelay)).
+其实也就是依赖关系，最后都依赖到同一个Completion
 
 
 
