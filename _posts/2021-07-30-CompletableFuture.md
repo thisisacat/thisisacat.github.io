@@ -24,7 +24,7 @@ mode
     mode的不同,影响在d.uniRun(a = src, fn, mode > 0 ? null : this)),postFire()等
 ```
 
-postFire</br>
+postFire<br/>
 根据mode的不同，返回this还是null,从而影响postComplete方法里面f的返回值,f的不同影响h的取值，是src的CompletableFuture还是dep的CompletableFuture
 
 ```
@@ -45,7 +45,7 @@ postFire</br>
      }
 ```
 
-push</br>
+push<br/>
 注意这里 是采用头插法的形式
 
 ```
@@ -114,9 +114,9 @@ claim
         }
 ```
 
-postFire</br>
-tryFire 和 postFire里面的两个return 关系到postComplete</br>
-根据mode的不同，返回this还是null,从而影响postComplete方法里面f的返回值,f的不同影响h的取值，是src的CompletableFuture还是dep的CompletableFuture</br>
+postFire<br/>
+tryFire 和 postFire里面的两个return 关系到postComplete<br/>
+根据mode的不同，返回this还是null,从而影响postComplete方法里面f的返回值,f的不同影响h的取值，是src的CompletableFuture还是dep的CompletableFuture<br/>
 
 ```
  final CompletableFuture<T> postFire(CompletableFuture<?> a, int mode) {
@@ -136,7 +136,7 @@ tryFire 和 postFire里面的两个return 关系到postComplete</br>
     }
 ```
 
-postComplete</br>
+postComplete<br/>
 
 ```
  final void postComplete() {
@@ -168,7 +168,7 @@ postComplete</br>
 
 ### **执行顺序**
 
-大致的执行逻辑是 stack(dep) 为一个单元执行完，然后转下一个stack(dep)</br>
+大致的执行逻辑是 stack(dep) 为一个单元执行完，然后转下一个stack(dep)<br/>
 ![](/images/posts/CompletableFuture/process.png)<br/>
 
 
